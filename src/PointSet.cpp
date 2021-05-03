@@ -18,6 +18,16 @@ PointSet::~PointSet()
 {
 }
 
+Point &PointSet::operator[](int index)
+{
+  if (index >= points.size() || index < 0)
+  {
+    std::cout << "PointSet::operator[] - ERROR: Out of range index.\n";
+    throw 50;
+  }
+  return points[index];
+}
+
 void PointSet::loadFromFile(std::string filename) 
 {
   std::ifstream ifs(filename);
@@ -143,6 +153,16 @@ Point PointSet::getFarthestPointTo(Point selected)
 void PointSet::insert(Point toInsert)
 {
   points.push_back(toInsert);
+}
+
+void PointSet::pop() 
+{
+  if (points.empty())
+  {
+    std::cout << "PointSet::pop - ERROR: Points container is empty already.\n";
+    throw 60;
+  }
+  extract(points[0]);
 }
 
 void PointSet::extract(Point toExtract)

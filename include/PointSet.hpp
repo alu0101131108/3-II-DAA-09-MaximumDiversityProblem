@@ -31,8 +31,11 @@ public:
   int getSize();
   Point getFarthestPointTo(Point selected);
   void insert(Point toInsert);
+  void pop();
   void extract(Point toExtract);
   bool belongs(Point possible);
+
+  Point &operator[](int index);
 };
 
 

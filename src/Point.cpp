@@ -78,7 +78,7 @@ bool operator==(Point &left, Point &right)
 
 float & Point::operator[](int dim) 
 {
-  if (dim >= dimension)
+  if (dim >= dimension || dim < 0)
   {
     std::cout << "Point::operator[] - ERROR: Dimension does not exist.\n";
     throw 50;
