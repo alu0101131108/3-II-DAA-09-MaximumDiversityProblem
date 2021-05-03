@@ -5,4 +5,4 @@ Compile with ```make``` at /build directory.
 Executable will be located at /build under the name main.
 
 ## Results
-Can be found at /output-results directory under the name <algorithm>.txt
+Can be found at /output-results directory under the name {algorithm}.txt
