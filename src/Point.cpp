@@ -58,6 +58,31 @@ float Point::getDistanceTo(Point other)
   return distance;
 }
 
+std::string Point::toString() 
+{
+  std::string str = "(";
+  std::string floatstr;
+  int uselessCeroCount;
+  for (int i = 0; i < dimension; i++)
+  {
+    uselessCeroCount = 0;
+    if (i != 0)
+      str += ", ";
+    floatstr = std::to_string(coordinates[i]);
+    // Remove unnecesary 0 from floatstr.
+    for (int i = floatstr.size() - 1; i >= 0; i--)
+    {
+      if (floatstr[i] != '0')
+        break;
+      uselessCeroCount++;
+    }
+    floatstr.erase(floatstr.end() - uselessCeroCount, floatstr.end());
+    str += floatstr;
+  }
+  str += ")";
+  return str;
+}
+
 bool operator==(Point &left, Point &right)
 {
   if (left.coordinates.size() != right.coordinates.size())

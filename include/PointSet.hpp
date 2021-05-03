@@ -34,6 +34,7 @@ public:
   void pop();
   void extract(Point toExtract);
   bool belongs(Point possible);
+  std::string toString();
 
   Point &operator[](int index);
 };

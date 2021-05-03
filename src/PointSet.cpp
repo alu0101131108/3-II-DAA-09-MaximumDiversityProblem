@@ -30,6 +30,10 @@ Point &PointSet::operator[](int index)
 
 void PointSet::loadFromFile(std::string filename) 
 {
+  // Clear previous data.
+  points.clear();
+  
+  // Load new data.
   std::ifstream ifs(filename);
   int pointsNumber;
   std::string line;
@@ -194,4 +198,15 @@ bool PointSet::belongs(Point possible)
     }
   }
   return false;
+}
+
+std::string PointSet::toString() 
+{
+  std::string str;
+  int pointsNumber = points.size();
+  for (int i = 0; i < pointsNumber; i++)
+  {
+    str += points[i].toString() + " ";
+  }
+  return str;
 }

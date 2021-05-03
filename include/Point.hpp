@@ -23,6 +23,7 @@ public:
   void setCoordinates(std::vector<float> coordinates_);
   void printCoordinates();
   float getDistanceTo(Point other);
+  std::string toString();
 
   float & operator[](int dim);
   friend bool operator==(Point & left, Point & right);
