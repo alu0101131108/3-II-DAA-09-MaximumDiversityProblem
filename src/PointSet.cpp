@@ -139,6 +139,12 @@ int PointSet::getSize()
 
 Point PointSet::getFarthestPointTo(Point selected)
 {
+  if (points.empty())
+  {
+    std::cout << "PointSet::getFarthestPointTo() - ERROR: Points vector is empty.\n";
+    throw 53;
+  }
+
   Point farthest;
   int pointsNumber = points.size();
   float distance, maxDistance = LOWER_DISTANCE_LIMIT;
@@ -183,7 +189,7 @@ void PointSet::extract(Point toExtract)
   }
   if (!existed)
   {
-    std::cout << "PointSet::extract - WARNING: Extracted element was not found.\n";
+    // std::cout << "PointSet::extract - WARNING: Extracted element was not found.\n";
   }
 }
 
@@ -209,4 +215,18 @@ std::string PointSet::toString()
     str += points[i].toString() + " ";
   }
   return str;
+}
+
+void PointSet::insert(PointSet toInsert)
+{
+  int size = toInsert.getSize();
+  for (int i = 0; i < size; i++)
+  {
+    insert(toInsert[i]);
+  }
+}
+
+void PointSet::clear()
+{
+  points.clear();
 }

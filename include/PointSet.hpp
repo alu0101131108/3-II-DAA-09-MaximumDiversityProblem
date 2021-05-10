@@ -31,9 +31,11 @@ public:
   int getSize();
   Point getFarthestPointTo(Point selected);
   void insert(Point toInsert);
+  void insert(PointSet toInsert);
   void pop();
   void extract(Point toExtract);
   bool belongs(Point possible);
+  void clear();
   std::string toString();
 
   Point &operator[](int index);
