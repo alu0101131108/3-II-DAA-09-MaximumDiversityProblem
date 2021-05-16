@@ -72,7 +72,7 @@ std::string Point::toString()
     // Remove unnecesary 0 from floatstr.
     for (int i = floatstr.size() - 1; i >= 0; i--)
     {
-      if (floatstr[i] != '0')
+      if (floatstr[i] != '0' && floatstr[i] != '.')
         break;
       uselessCeroCount++;
     }

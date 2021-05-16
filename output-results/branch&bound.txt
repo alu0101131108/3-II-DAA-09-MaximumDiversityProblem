@@ -1,0 +1,3 @@
+FUNCIONO POR LA CARA, na en vd la funcion q falla no se ejecuta con los couts xd
+
+15   2    3    20   2    27.372700      (0.58, 1.29) (8.65, 9.98) (9.11, 3.23)                                                              0.010291

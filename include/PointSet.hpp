@@ -30,9 +30,11 @@ public:
   int getDimension();
   int getSize();
   Point getFarthestPointTo(Point selected);
+  PointSet substract(PointSet other);
   void insert(Point toInsert);
   void insert(PointSet toInsert);
   void pop();
+  void popBack(int times = 1);
   void extract(Point toExtract);
   bool belongs(Point possible);
   void clear();

@@ -94,7 +94,13 @@ PointSet PointSet::generateMDSubset(int subsetSize)
 Point PointSet::getGravityCenter() 
 {
   int pointsNumber = points.size();
-  std::vector<float> gravityCenterCoordinates(dimension, 0);
+
+  if (pointsNumber == 1)
+  {
+    return points[0];
+  }
+
+    std::vector<float> gravityCenterCoordinates(dimension, 0);
   // Add all corresponding point coordinates.
   for (int i = 0; i < pointsNumber; i++) 
   {
@@ -114,6 +120,10 @@ Point PointSet::getGravityCenter()
 
 float PointSet::getDiversityValue() 
 {
+  if (points.size() == 1) {
+    return 0;
+  }
+
   float diversity = 0;
   int pointsNumber = points.size();
   // Sum of all (unique) distances.
@@ -160,6 +170,16 @@ Point PointSet::getFarthestPointTo(Point selected)
   return farthest;
 }
 
+PointSet PointSet::substract(PointSet other)
+{
+  PointSet substraction = *this;
+  for (int i = 0; i < other.getSize(); i++)
+  {
+    substraction.extract(other[i]);
+  }
+  return substraction;
+}
+
 void PointSet::insert(Point toInsert)
 {
   points.push_back(toInsert);
@@ -175,6 +195,19 @@ void PointSet::pop()
   extract(points[0]);
 }
 
+void PointSet::popBack(int times)
+{
+  for (int i = 0; i < times; i++)
+  {
+    if (points.empty())
+    {
+      std::cout << "PointSet::pop - ERROR: Points container is empty already.\n";
+      throw 60;
+    }
+    extract(points[points.size() - 1]);
+  }
+}
+
 void PointSet::extract(Point toExtract)
 {
   bool existed = false;
@@ -185,6 +218,7 @@ void PointSet::extract(Point toExtract)
     {
       points.erase(points.begin() + i);
       existed = true;
+      break;
     }
   }
   if (!existed)
