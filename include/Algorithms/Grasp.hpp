@@ -17,7 +17,7 @@ class Grasp : public MDAlgorithm
     int iterations;
     int lrcSize;
     int iterationsMode;
-    PointSet remainer;
+    PointSet originalSet;
 
     PointSet constructive(PointSet set, int subsetSize);
     PointSet update(PointSet set);

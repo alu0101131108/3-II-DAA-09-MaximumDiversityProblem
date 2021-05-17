@@ -8,6 +8,9 @@
 #include <math.h>
 #include <cmath>
 
+// Precision when comparing two points.
+const float EPSILON = 0.001;
+
 class Point
 {
 private:

@@ -85,6 +85,7 @@ std::string Point::toString()
 
 bool operator==(Point &left, Point &right)
 {
+  bool equal;
   if (left.coordinates.size() != right.coordinates.size())
   {
     return false;
@@ -92,7 +93,7 @@ bool operator==(Point &left, Point &right)
 
   for (int i = 0; i < left.coordinates.size(); i++)
   {
-    if (left[i] != right[i])
+    if (!(fabs(left[i] - right[i]) < EPSILON))
     {
       return false;
     }

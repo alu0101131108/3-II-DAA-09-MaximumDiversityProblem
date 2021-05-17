@@ -6,6 +6,7 @@ iterations(iterations_), lrcSize(lrcSize_), iterationsMode(iterationsMode_)
 
 PointSet Grasp::constructive(PointSet set, int subsetSize)
 {
+  originalSet = set;
   PointSet MDSubset(set.getDimension()), candidates;
   Point farthest, random, gravityCenter = set.getGravityCenter();
   do
@@ -29,14 +30,13 @@ PointSet Grasp::constructive(PointSet set, int subsetSize)
     candidates.clear();
 
   } while (MDSubset.getSize() != subsetSize);
-  
-  remainer = set;
+
   return MDSubset;
 }
 
 PointSet Grasp::update(PointSet set)
 {
-  PointSet previous, updated = set;
+  PointSet remainers, previous, updated = set;
   Point extracted, bestExtracted, bestInserted;
   float diversity, bestDiversity;
 
@@ -44,15 +44,16 @@ PointSet Grasp::update(PointSet set)
   {
     previous = updated;
     bestDiversity = previous.getDiversityValue();
+    remainers = originalSet.substract(previous);
 
     // Update solution.
     for (int i = 0; i < updated.getSize(); i++)
     {
       extracted = updated[0];
       updated.extract(updated[0]);
-      for (int j = 0; j < remainer.getSize(); j++)
+      for (int j = 0; j < remainers.getSize(); j++)
       {
-        updated.insert(remainer[j]);
+        updated.insert(remainers[j]);
 
         // Keep track of best extraction/insertion.
         diversity = updated.getDiversityValue();
@@ -60,9 +61,9 @@ PointSet Grasp::update(PointSet set)
         {
           bestDiversity = diversity;
           bestExtracted = extracted;
-          bestInserted = remainer[j];
+          bestInserted = remainers[j];
         }
-        updated.extract(remainer[j]);
+        updated.extract(remainers[j]);
       }
       updated.insert(extracted);
     }

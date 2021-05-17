@@ -223,7 +223,7 @@ void PointSet::extract(Point toExtract)
   }
   if (!existed)
   {
-    // std::cout << "PointSet::extract - WARNING: Extracted element was not found.\n";
+    std::cout << "PointSet::extract - WARNING: Extracted element was not found.\n";
   }
 }
 
