@@ -15,21 +15,23 @@ enum Strategy
 class BranchAndBound : public MDAlgorithm
 {
 private:
-  int strategy;
   MDAlgorithm* algorithm;
-  std::vector<Node*> branchables;
-  PointSet set;
+  int strategy;
   int subsetSize;
+  int generatedNodes;
+  PointSet set;
   PointSet lowerBound;
   Node* root;
+  std::vector<Node*> branchables;
 
 public:
   BranchAndBound(int strategy_, MDAlgorithm* algorithm_);
   PointSet run(PointSet set_, int subsetSize_);
   void branchNode(Node *branchable);
-  void fillNode(Node* fillable);
+  void computeUpperBound(Node* fillable);
   void addToBranchables(Node* addable);
   void trim();
+  int getGeneratedNodes();
 };
 
 

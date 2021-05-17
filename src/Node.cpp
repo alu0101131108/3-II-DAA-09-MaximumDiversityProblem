@@ -58,7 +58,7 @@ void Node::draw()
   std::string tab = std::string(depth * 2, ' ');
   std::string stringData = data.toString();
   std::string trimmedStr = trimmed ? "TRIMMED -" : "";
-  std::cout << tab << trimmedStr << "Node (" << depth << ") - " << childs.size() << " - " << data.getDiversityValue() << std::endl;
+  std::cout << tab << trimmedStr << "Node (" << depth << ") - " << childs.size() << " - " << upperBound << std::endl;
   std::cout << tab << stringData << std::endl;
   for (int i = 0; i < childs.size(); i++)
   {
