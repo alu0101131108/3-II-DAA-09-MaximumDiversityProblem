@@ -28,7 +28,7 @@ PointSet BranchAndBound::run(PointSet set_, int subsetSize_)
   }
 
   // Branch all branchable nodes. Since vector is sorted by given criteria, we will branch
-  // the first element and then erase it (already branched).
+  // the first element and then pull it off the list (already branched).
   while (!branchables.empty())
   {
     Node* bestBranchable = branchables[0];
@@ -75,17 +75,27 @@ void BranchAndBound::branchNode(Node* parent)
   }
 }
 
-// Following https://www.uv.es/rmarti/paper/docs/mdp3.pdf method.
+/**
+ * Aproach from https://www.uv.es/rmarti/paper/docs/mdp3.pdf method.
+ * Page 5 - 8. Proposition 1 and proposition 2.
+ * Any solution's Z can be split in three parts: z1, z2 and z3.
+ * z1 is the sum of distances between all selected points.
+ * z2 is the sum of distances that start at a selected point and end at an unselected one.
+ * z3 is the sum of distances between all unselected points.
+ * Upper Bound for Z will be found by computing an upper bound for each part, and then
+ * adding those three: UBz = UBz1 + UBz2 + UBz3.
+ **/
 void BranchAndBound::computeUpperBound(Node *nodePointer)
 {
   PointSet selected = nodePointer->getData();
   PointSet unselected = set.substract(selected);
   int remainers = subsetSize - selected.getSize();
 
-  //// Represents the sum of distances between al selected points.
+  //// Z1 will be constant, then its own value will be its upper bound.
   float z1 = selected.getDiversityValue();
 
-  //// Represents the sum of distances that start at a selected point and end at an unselected one.
+  //// Z2 will contain the biggest contributions (respect to the selected ones)
+  //// possible from unselected nodes when added to the partial solution.
   float z2 = 0; 
   std::vector<float> zSel;
   bool inserted;
@@ -116,22 +126,27 @@ void BranchAndBound::computeUpperBound(Node *nodePointer)
       zSel.push_back(zSelValue);
     }
   }
+  // Fill z2 with most significant contributions.
   for (int r = 0; r < remainers; r++)
   {
     z2 += zSel[r];
   }
 
-  //// Represents the sum of distances between al unselected points.
+  //// Z3 will contain the biggest contributions (respect to the unselected ones)
+  //// possible from unselected nodes when added to the partial solution.
   float z3 = 0;
-  std::vector<float> zUnsel;
-  std::vector<float> dUnsel;
-  // Fill zUnset values ordering by max to min.
+  std::vector<float> zUnsel;  // All possible contributions in z3 context. (sorted high to low)
+  std::vector<float> dUnsel;  // There will be one dUnsel vector for each point v of unselected.
+                              // It will contain all distances from it to other unselected points. (sorted)
+
+  // Given a point v in unselected.
   for (int u = 0; u < unselected.getSize(); u++)
   {
     dUnsel.clear();
     float dUnselValue;
     inserted = false;
-    // Find given unselected[u] dUnsel values, and insert them sorted.
+
+    // Find given v's dUnsel values, and insert them sorted.
     for (int u2 = 0; u2 < unselected.getSize(); u2++)
     {
       if (u != u2)
@@ -152,10 +167,7 @@ void BranchAndBound::computeUpperBound(Node *nodePointer)
         }
       }
     }
-    // Now we fill zUnsel for unselected[u].
-    // [PAPER] zUnselValue can be interpreted as an upper bound of the
-    // potential contribution of unselected[u] with respect to the
-    // unselected points if we add it to the partial solution of selecteds.
+    // Now v's zUnselValue is filled by most significant distances.
     float zUnselValue = 0;
     for (int r = 0; r < remainers - 1; r++)
     {
@@ -163,7 +175,7 @@ void BranchAndBound::computeUpperBound(Node *nodePointer)
     }
     zUnselValue /= 2;
 
-    // Insert it considering vector must be sorted from high to low.
+    // Insert zUnselValue considering vector must be sorted from high to low.
     inserted = false;
     for (int z = 0; z < zUnsel.size(); z++)
     {
@@ -179,12 +191,15 @@ void BranchAndBound::computeUpperBound(Node *nodePointer)
       zUnsel.push_back(zUnselValue);
     }
   }
-
+  // We end up with zUnsel filled with every zUnselValue for every v in unselected.
+  // It is also sorted from high to low. So in order to get its most significant 
+  // potential contribution, we will add up its most significant potential values.
   for (int r = 0; r < remainers; r++)
   {
     z3 += zUnsel[r];
   }
   
+  // Finally we compute Upper Bound of Z by adding its 3 components upper bounds.
   nodePointer->setUpperBound(z1 + z2 + z3);
 }
 
