@@ -5,6 +5,7 @@ BranchAndBound::BranchAndBound(int strategy_, MDAlgorithm *algorithm_) : strateg
   generatedNodes = 0;
 }
 
+// MODIFICACION EN ESTA FUNCION.
 PointSet BranchAndBound::run(PointSet set_, int subsetSize_)
 {
   // Set parameters as attributes in order to make them accesible from other
@@ -29,11 +30,23 @@ PointSet BranchAndBound::run(PointSet set_, int subsetSize_)
 
   // Branch all branchable nodes. Since vector is sorted by given criteria, we will branch
   // the first element and then pull it off the list (already branched).
+  ///// MODIFICACION /////////
+  // Se cambia para que siempre que sea posible, se coga el segundo mejor valor. Es decir, el
+  // segundo elemento de la lista.
   while (!branchables.empty())
   {
-    Node* bestBranchable = branchables[0];
-    branchables.erase(branchables.begin());
-    branchNode(bestBranchable);
+    if (branchables.size() > 1)
+    {
+      Node *bestBranchable = branchables[1];
+      branchables.erase(branchables.begin() + 1);
+      branchNode(bestBranchable);
+    }
+    else
+    {
+      Node *bestBranchable = branchables[0];
+      branchables.erase(branchables.begin());
+      branchNode(bestBranchable);
+    }
   }
 
   // Result will end up in lowerBound attribute.
@@ -203,6 +216,7 @@ void BranchAndBound::computeUpperBound(Node *nodePointer)
   nodePointer->setUpperBound(z1 + z2 + z3);
 }
 
+// MODIFICACION EN ESTA FUNCION.
 void BranchAndBound::addToBranchables(Node *addable)
 {
   bool inserted = false;
@@ -236,6 +250,25 @@ void BranchAndBound::addToBranchables(Node *addable)
     for (int i = 0; i < branchables.size(); i++)
     {
       if (depth < branchables[i]->getDepth())
+      {
+        branchables.insert(branchables.begin() + i, addable);
+        inserted = true;
+        break;
+      }
+    }
+    if (!inserted)
+    {
+      branchables.push_back(addable);
+    }
+    break;
+
+  ////// MODIFICACION //////
+  // En este caso el vector de nodos a expandir se ordena de mayor a menor cota superior.
+  case SECOND_BEST:
+    upperBoundValue = addable->getUpperBound();
+    for (int i = 0; i < branchables.size(); i++)
+    {
+      if (upperBoundValue > branchables[i]->getUpperBound())
       {
         branchables.insert(branchables.begin() + i, addable);
         inserted = true;

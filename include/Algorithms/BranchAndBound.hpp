@@ -9,7 +9,8 @@
 enum Strategy
 {
   VALUE,
-  DEPTH
+  DEPTH,
+  SECOND_BEST // MODIFICACION
 };
 
 class BranchAndBound : public MDAlgorithm
